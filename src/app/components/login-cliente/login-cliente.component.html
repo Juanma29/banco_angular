@@ -8,13 +8,13 @@
     <input #usuarioInput type="text" name="usuario" id="usuario">
 
     <label for="password">Password</label>
-    <input #passwordInput type="password" name="password" id="password">
     <input
-    (keyup)="loginClienteEnter($event, usuarioInput, passwordInput)"
-    #passwordInput
-    type="password"
-    name="password"
-    id="password">
+      (keyup)="loginClienteEnter($event, usuarioInput, passwordInput)"
+      #passwordInput
+      type="password"
+      name="password"
+      id="password"
+    >
 
     <button
       class="login-button"
