@@ -1,5 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { obtenerLocalizacion } from '../../utilidades/geolocalizacion';
+import { TiempoService } from '../../services/tiempo.service';
+import { CriptomonedaService } from '../../services/criptomoneda.service';
+import { AuthService } from '../../services/auth.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-header',
@@ -8,16 +12,33 @@ import { obtenerLocalizacion } from '../../utilidades/geolocalizacion';
 })
 export class HeaderComponent implements OnInit {
 
+  estaGestorAutenticado: boolean = false;
+  estaClienteAutenticado: boolean = false;
+
   reloj!: string;
   minutosRestantes!: number;
+  temperatura!: number;
+  ciudad!: string;
+  precioBitcoin!: number;
+  router: any;
 
-  constructor() { }
+  constructor(
+    private tiempoService: TiempoService,
+    private criptomonedaService: CriptomonedaService,
+    private AuthService: AuthService
+  ) { }
 
   ngOnInit(): void {
+
+    this.estaGestorAutenticado = this.AuthService.estaAutenticadoGestor();
+    this.AuthService.cambiosAutenticacionGestor.subscribe(autenticado => {
+      this.estaGestorAutenticado = autenticado;
+    })
 
     this.actualizarReloj();
     this.actualizarMinutosRestantes();
     this.actualizarTemperatura();
+    this.actualizarPrecioBitcoin();
 
     // el callback se ejecuta cada segundo
     setInterval(() => {
@@ -49,17 +70,28 @@ export class HeaderComponent implements OnInit {
     const fechaActual = new Date();
 
     const fechaSalidaClase = new Date();
-    fechaSalidaClase.setHours(20, 25, 0);
+    fechaSalidaClase.setHours(20, 30, 0);
 
     const diffMilisegundos = fechaSalidaClase.getTime() - fechaActual.getTime();
     this.minutosRestantes = Math.round(diffMilisegundos / 1000 / 60);
-    
   }
 
-  actualizarTemperatura(){
-    obtenerLocalizacion((latitud: number, longitud : number) => {
-      console.log(latitud, longitud);
-      
+  actualizarTemperatura() {
+    obtenerLocalizacion(async (latitud: number, longitud: number) => {
+      const datos = await this.tiempoService.obtenerTiempo(longitud, latitud);
+      this.temperatura = datos.data[0].temp;
+      this.ciudad = datos.data[0].city_name;
     });
+  }
+
+  actualizarPrecioBitcoin() {
+    this.criptomonedaService.obtenerPrecioBitcoin((precioBitcoin: number) => {
+      this.precioBitcoin = precioBitcoin;
+    });
+  }
+
+  onLogout() {
+    this.AuthService.desautenticado();
+    this.router.navigate(['login', 'gestor']);
   }
 }

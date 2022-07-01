@@ -15,7 +15,7 @@ export class ChatService {
 
     this.ws.onopen = () => {
       console.log('Conexión establecida correctamente');
-      // this.ws.send('Hola, soy Alejandro');
+      // this.ws.send('Hola, soy Juanma');
     };
   }
 
