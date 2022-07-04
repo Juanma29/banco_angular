@@ -20,18 +20,18 @@ export class HeaderComponent implements OnInit {
   temperatura!: number;
   ciudad!: string;
   precioBitcoin!: number;
-  router: any;
 
   constructor(
     private tiempoService: TiempoService,
     private criptomonedaService: CriptomonedaService,
-    private AuthService: AuthService
+    private authService: AuthService,
+    private router: Router
   ) { }
 
   ngOnInit(): void {
 
-    this.estaGestorAutenticado = this.AuthService.estaAutenticadoGestor();
-    this.AuthService.cambiosAutenticacionGestor.subscribe(autenticado => {
+    this.estaGestorAutenticado = this.authService.estaAutenticadoGestor();
+    this.authService.cambiosAutenticacionGestor.subscribe(autenticado => {
       this.estaGestorAutenticado = autenticado;
     })
 
@@ -47,6 +47,9 @@ export class HeaderComponent implements OnInit {
     }, 1000);
   }
 
+  obtenerUsuarioAutenticado(): string | null {
+    return localStorage.getItem('usuario');
+  }
   actualizarReloj() {
     const fechaActual = new Date();
 
@@ -91,7 +94,9 @@ export class HeaderComponent implements OnInit {
   }
 
   onLogout() {
-    this.AuthService.desautenticado();
+    this.authService.desautenticado();
+
+    // redirecciona a la url /login/gestor
     this.router.navigate(['login', 'gestor']);
   }
 }

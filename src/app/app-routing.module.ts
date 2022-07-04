@@ -5,6 +5,7 @@ import { ChatComponent } from './components/chat/chat.component';
 import { LoginClienteComponent } from './components/login-cliente/login-cliente.component';
 import { NoEncontradoComponent } from './components/no-encontrado/no-encontrado.component';
 import { GestoresComponent } from './components/gestores/gestores.component';
+import { MensajesComponent } from './components/mensajes/mensajes.component';
 
 const routes: Routes = [
   /* ruta raíz */
@@ -14,6 +15,8 @@ const routes: Routes = [
   { path: 'login/cliente', component: LoginClienteComponent },
   { path: 'gestores', component: GestoresComponent },
   { path: 'chat', component: ChatComponent },
+  { path: 'mensajes', component: MensajesComponent},
+  
   /* ruta 404 */
   { path: '**', component: NoEncontradoComponent }
 ];
